@@ -1,6 +1,6 @@
 // Service Worker: hält die App-Dateien im Speicher des Handys,
 // damit sie auch bei schlechtem Netz sofort startet.
-const CACHE = "lovebox-v3";
+const CACHE = "lovebox-v4";
 const DATEIEN = ["./", "index.html", "mqtt.min.js", "manifest.json", "icon-180.png", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", (e) => {

@@ -111,7 +111,7 @@
 <main>
   <header>
     <h1>Lovebox</h1>
-    <div id="status" class="status"><i></i><span>verbinde …</span></div>
+    <div id="status" class="status hidden"><i></i><span></span></div>
   </header>
 
   <!-- ===== Einrichtung (nur beim ersten Öffnen) ===== -->
@@ -121,15 +121,11 @@
        Alle Briefe werden mit dem Schlüssel verschlüsselt, bevor sie das Handy verlassen.</p>
     <form id="setupForm">
       <label>Dein Name (steht unter dem Brief)</label>
-      <input name="name" required maxlength="20" placeholder="Darius">
+      <input name="name" required maxlength="20">
       <label>Schlüssel der Box</label>
       <input name="key" required autocapitalize="off" autocorrect="off" autocomplete="off">
       <label>Server</label>
       <input name="host" required autocapitalize="off" autocorrect="off" value="wss://broker.hivemq.com:8884/mqtt">
-      <label>Benutzer</label>
-      <input name="user" autocapitalize="off" autocorrect="off" autocomplete="off">
-      <label>Passwort</label>
-      <input name="pass" type="password" autocomplete="off">
       <button class="einwerfen" type="submit">Speichern</button>
     </form>
   </section>
@@ -155,7 +151,7 @@
     <div id="brief" class="brief">
       <div class="anrede">Draga mea,</div>
       <textarea id="text" maxlength="200" placeholder="schreib ihr etwas Schönes …"></textarea>
-      <div class="unterschrift" id="unterschrift">– Darius</div>
+      <div class="unterschrift" id="unterschrift"></div>
       <div class="werkzeuge">
         <div class="zeichen">
           <button type="button">ă</button><button type="button">â</button><button type="button">î</button>
@@ -196,19 +192,19 @@ let gelesen = JSON.parse(localStorage.getItem("lovebox-gelesen") || "null");
 let client = null;
 const wenigBewegung = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Einrichtung per Link möglich: ...#key=XYZ&name=Darius&host=...&user=...&pass=...
+// Einrichtung per Link möglich: ...#key=XYZ&name=NAME&host=...
 if (location.hash.length > 1) {
   const p = new URLSearchParams(location.hash.slice(1));
   if (p.get("key")) {
-    cfg = { name: p.get("name") || "Darius", key: p.get("key"),
-            host: p.get("host") || "wss://broker.hivemq.com:8884/mqtt",
-            user: p.get("user") || "", pass: p.get("pass") || "" };
+    cfg = { name: p.get("name") || "", key: p.get("key"),
+            host: p.get("host") || "wss://broker.hivemq.com:8884/mqtt" };
     localStorage.setItem("lovebox-cfg", JSON.stringify(cfg));
   }
   history.replaceState(null, "", location.pathname);  // Schlüssel aus der Adresszeile entfernen
 }
 
 function zeigeSetup() {
+  $("status").classList.add("hidden");
   $("setup").classList.remove("hidden");
   $("haupt").classList.add("hidden");
   if (cfg) for (const k in cfg) if ($("setupForm")[k]) $("setupForm")[k].value = cfg[k];
@@ -217,8 +213,7 @@ function zeigeSetup() {
 $("setupForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const f = e.target;
-  cfg = { name: f.name.value.trim(), key: f.key.value.trim(), host: f.host.value.trim(),
-          user: f.user.value.trim(), pass: f.pass.value };
+  cfg = { name: f.name.value.trim(), key: f.key.value.trim(), host: f.host.value.trim() };
   localStorage.setItem("lovebox-cfg", JSON.stringify(cfg));
   start();
 });
@@ -262,7 +257,7 @@ const topic = (name) => `lovebox/${topicId}/${name}`;
 
 function setStatus(text, klasse) {
   $("status").querySelector("span").textContent = text;
-  $("status").className = "status " + (klasse || "");
+  $("status").className = "status " + (klasse || "");  // (entfernt auch "hidden")
 }
 
 async function start() {
@@ -274,8 +269,6 @@ async function start() {
   setStatus("verbinde …");
 
   client = mqtt.connect(cfg.host, {
-    username: cfg.user || undefined,
-    password: cfg.pass || undefined,
     clientId: "lovebox-app-" + Math.random().toString(16).slice(2, 10),
     reconnectPeriod: 3000,
   });
