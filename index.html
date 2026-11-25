@@ -94,6 +94,8 @@
   .setup h2 { margin-top: 10px; color: var(--tinte); font-size: 20px; }
   .setup p { color: var(--blass); font-size: 14px; margin-top: 0; }
   .setup label { display: block; font-size: 13px; color: var(--blass); margin: 14px 0 4px; }
+  .erweitert { margin-top: 14px; font-size: 13px; color: var(--blass); }
+  .erweitert summary { cursor: pointer; }
   .setup input { width: 100%; padding: 12px 14px; border: 1px solid var(--linie); border-radius: 10px;
     background: var(--papier); color: var(--tinte); font: 16px -apple-system, sans-serif; }
 
@@ -124,8 +126,11 @@
       <input name="name" required maxlength="20">
       <label>Schlüssel der Box</label>
       <input name="key" required autocapitalize="off" autocorrect="off" autocomplete="off">
-      <label>Server</label>
-      <input name="host" required autocapitalize="off" autocorrect="off" value="wss://broker.hivemq.com:8884/mqtt">
+      <details class="erweitert">
+        <summary>Erweitert</summary>
+        <label>Server (Adresse des Briefkastens – normalerweise nicht ändern)</label>
+        <input name="host" required autocapitalize="off" autocorrect="off" value="wss://broker.hivemq.com:8884/mqtt">
+      </details>
       <button class="einwerfen" type="submit">Speichern</button>
     </form>
   </section>
@@ -165,7 +170,7 @@
     <h2>Deine Briefe</h2>
     <ul id="verlauf" class="verlauf"></ul>
 
-    <div class="fuss"><a href="#" id="reset">Einstellungen</a></div>
+    <div class="fuss"><a href="#" id="reset">Einstellungen</a> · <a href="#" id="abmelden">Abmelden</a></div>
   </section>
 </main>
 
@@ -216,6 +221,17 @@ $("setupForm").addEventListener("submit", (e) => {
   cfg = { name: f.name.value.trim(), key: f.key.value.trim(), host: f.host.value.trim() };
   localStorage.setItem("lovebox-cfg", JSON.stringify(cfg));
   start();
+});
+
+// Abmelden: alles von diesem Handy löschen (Schlüssel, Name, Verlauf)
+$("abmelden").addEventListener("click", (e) => {
+  e.preventDefault();
+  if (!confirm("Wirklich abmelden? Schlüssel und Briefverlauf werden von diesem Handy gelöscht.")) return;
+  if (client) client.end(true);
+  localStorage.clear();
+  cfg = null; verlauf = []; gelesen = null;
+  $("setupForm").reset();
+  zeigeSetup();
 });
 
 $("reset").addEventListener("click", (e) => { e.preventDefault(); if (client) client.end(true); zeigeSetup(); });
