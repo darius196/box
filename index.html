@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lovebox</title>
+<!-- Damit das iPhone die Seite wie eine echte App behandelt -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Lovebox">
+<meta name="theme-color" content="#f3ece0">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<style>
+  /* ---------- Farben & Schriften ---------- */
+  :root {
+    --bg: #f3ece0;        /* Beige-Hintergrund */
+    --papier: #fbf7f0;    /* Briefpapier */
+    --linie: #e7dccb;     /* Papierlinien, Rahmen */
+    --tinte: #3d332c;     /* Text */
+    --blass: #8f8173;     /* Nebentext */
+    --rose: #c0675a;      /* Akzent (Briefkasten, Knopf) */
+    --rose-dunkel: #a4534a;
+    --gruen: #7b9a6c;
+    --serif: ui-serif, "New York", Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--tinte);
+    font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  main { max-width: 440px; margin: 0 auto;
+    padding: calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 28px); }
+  .hidden { display: none !important; }
+
+  /* ---------- Kopf ---------- */
+  header { display: flex; align-items: baseline; justify-content: space-between; }
+  h1 { font: 600 22px var(--serif); margin: 0; letter-spacing: .01em; }
+  .status { font-size: 13px; color: var(--blass); display: flex; align-items: center; gap: 6px; }
+  .status i { width: 7px; height: 7px; border-radius: 50%; background: var(--linie); display: inline-block; }
+  .status.on i { background: var(--gruen); }
+  .status.off i { background: var(--rose); }
+
+  /* ---------- Briefkasten ---------- */
+  .kasten { text-align: center; margin: 14px 0 6px; position: relative; }
+  .kasten svg { width: 132px; height: auto; overflow: visible; }
+  #flagge { transform-origin: 124px 78px; transform: rotate(90deg);
+    transition: transform .6s cubic-bezier(.3,1.6,.5,1); }
+  .kasten.voll #flagge { transform: rotate(0deg); }
+  .kasten.wackeln svg { animation: wackeln .5s ease-in-out; }
+  @keyframes wackeln { 25% { transform: rotate(-4deg); } 60% { transform: rotate(3deg); } }
+  .herzinfo { text-align: center; font-size: 14px; color: var(--blass); margin-bottom: 22px; }
+  .herzinfo b { color: var(--tinte); font-weight: 600; }
+  .herzinfo .h { color: var(--rose); }
+
+  /* ---------- Brief ---------- */
+  .brief { background: var(--papier); border-radius: 6px; padding: 22px 22px 18px;
+    box-shadow: 0 1px 2px rgba(61,51,44,.06), 0 8px 24px rgba(61,51,44,.08);
+    position: relative; transition: opacity .3s, transform .3s; }
+  .brief.weg { opacity: 0; transform: scale(.96); }
+  .anrede { font: italic 15px var(--serif); color: var(--blass); margin-bottom: 4px; }
+  textarea { width: 100%; min-height: 150px; resize: none; border: 0; background: transparent;
+    color: var(--tinte); font: 19px/32px var(--serif); padding: 0; outline: none;
+    /* Linien wie auf Briefpapier */
+    background-image: linear-gradient(transparent 31px, var(--linie) 31px, var(--linie) 32px);
+    background-size: 100% 32px; background-attachment: local; }
+  textarea::placeholder { color: #c2b5a6; font-style: italic; }
+  .unterschrift { text-align: right; font: italic 17px var(--serif); margin-top: 6px; }
+  .werkzeuge { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; gap: 8px; }
+  .zeichen { display: flex; gap: 6px; }
+  .zeichen button { width: 34px; height: 34px; border: 1px solid var(--linie); border-radius: 50%;
+    background: transparent; color: var(--tinte); font: 16px var(--serif); padding: 0; }
+  .zeichen button:active { background: var(--linie); }
+  .info { font-size: 12px; color: var(--blass); text-align: right; white-space: nowrap; }
+  .einwerfen { display: block; width: 100%; margin-top: 18px; padding: 15px; border: 0; border-radius: 999px;
+    background: var(--rose); color: #fff; font: 600 17px -apple-system, sans-serif; letter-spacing: .01em;
+    transition: background .2s, opacity .2s; }
+  .einwerfen:active { background: var(--rose-dunkel); }
+  .einwerfen:disabled { opacity: .35; }
+
+  /* ---------- Briefe-Verlauf ---------- */
+  h2 { font: 600 15px var(--serif); margin: 30px 0 8px; color: var(--blass); }
+  .verlauf { list-style: none; padding: 0; margin: 0; }
+  .verlauf li { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--linie); }
+  .verlauf li:first-child { border-top: 0; }
+  .verlauf svg { flex: none; width: 26px; margin-top: 3px; }
+  .verlauf .text { font: 15px/1.4 var(--serif); }
+  .verlauf .meta { font-size: 12px; color: var(--blass); margin-top: 2px; }
+  .verlauf .meta.gelesen { color: var(--gruen); }
+  .leer { color: var(--blass); font-size: 14px; font-style: italic; }
+  .fuss { text-align: center; margin-top: 26px; font-size: 13px; }
+  .fuss a { color: var(--blass); }
+
+  /* ---------- Einrichtung ---------- */
+  .setup h2 { margin-top: 10px; color: var(--tinte); font-size: 20px; }
+  .setup p { color: var(--blass); font-size: 14px; margin-top: 0; }
+  .setup label { display: block; font-size: 13px; color: var(--blass); margin: 14px 0 4px; }
+  .setup input { width: 100%; padding: 12px 14px; border: 1px solid var(--linie); border-radius: 10px;
+    background: var(--papier); color: var(--tinte); font: 16px -apple-system, sans-serif; }
+
+  /* ---------- Fliegende Dinge (Animation) ---------- */
+  .flieger { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 10; }
+  .flieger #klappe { transform-origin: 50% 0; transform: scaleY(-1); transition: transform .35s ease-in-out; }
+  .flieger.zu #klappe { transform: scaleY(1); }
+  .herzchen { position: absolute; color: var(--rose); font-size: 18px; pointer-events: none;
+    animation: aufsteigen 1.6s ease-out forwards; }
+  @keyframes aufsteigen { from { opacity: 0; transform: translate(0, 0) scale(.6); }
+    20% { opacity: 1; } to { opacity: 0; transform: translate(var(--dx), -70px) scale(1.1); } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Lovebox</h1>
+    <div id="status" class="status"><i></i><span>verbinde …</span></div>
+  </header>
+
+  <!-- ===== Einrichtung (nur beim ersten Öffnen) ===== -->
+  <section id="setup" class="setup hidden">
+    <h2>Willkommen</h2>
+    <p>Einmalig einrichten. Die Daten bleiben nur auf diesem Handy.
+       Alle Briefe werden mit dem Schlüssel verschlüsselt, bevor sie das Handy verlassen.</p>
+    <form id="setupForm">
+      <label>Dein Name (steht unter dem Brief)</label>
+      <input name="name" required maxlength="20" placeholder="Darius">
+      <label>Schlüssel der Box</label>
+      <input name="key" required autocapitalize="off" autocorrect="off" autocomplete="off">
+      <label>Server</label>
+      <input name="host" required autocapitalize="off" autocorrect="off" value="wss://broker.hivemq.com:8884/mqtt">
+      <label>Benutzer</label>
+      <input name="user" autocapitalize="off" autocorrect="off" autocomplete="off">
+      <label>Passwort</label>
+      <input name="pass" type="password" autocomplete="off">
+      <button class="einwerfen" type="submit">Speichern</button>
+    </form>
+  </section>
+
+  <!-- ===== Hauptansicht ===== -->
+  <section id="haupt" class="hidden">
+    <div id="kasten" class="kasten">
+      <svg viewBox="0 0 150 150" aria-label="Briefkasten">
+        <rect x="64" y="118" width="14" height="32" rx="2" fill="#b9a185"/>          <!-- Pfosten -->
+        <rect x="18" y="30" width="106" height="92" rx="20" fill="#c0675a"/>         <!-- Kasten -->
+        <rect x="12" y="24" width="118" height="20" rx="10" fill="#a4534a"/>         <!-- Dach -->
+        <rect id="schlitz" x="40" y="56" width="62" height="8" rx="4" fill="#5b2b25"/> <!-- Schlitz -->
+        <path d="M71 104c-9-6-15-11-15-17 0-4 3-7 7-7 3 0 6 2 8 5 2-3 5-5 8-5 4 0 7 3 7 7 0 6-6 11-15 17z"
+              fill="#f3ece0" opacity=".9"/>                                          <!-- Herz -->
+        <g id="flagge">
+          <rect x="122" y="40" width="4" height="40" rx="2" fill="#7d6a58"/>
+          <path d="M126 40h20l-5 7 5 7h-20z" fill="#e3a94b"/>
+        </g>
+      </svg>
+    </div>
+    <div class="herzinfo"><span class="h">♥</span> <b id="herzN">0 Herzen</b> von ihr · <span id="herzZeit">noch keins</span></div>
+
+    <div id="brief" class="brief">
+      <div class="anrede">Draga mea,</div>
+      <textarea id="text" maxlength="200" placeholder="schreib ihr etwas Schönes …"></textarea>
+      <div class="unterschrift" id="unterschrift">– Darius</div>
+      <div class="werkzeuge">
+        <div class="zeichen">
+          <button type="button">ă</button><button type="button">â</button><button type="button">î</button>
+          <button type="button">ș</button><button type="button">ț</button>
+        </div>
+        <div class="info"><div id="zaehler">0/200</div><div id="seiten"></div></div>
+      </div>
+    </div>
+    <button id="senden" class="einwerfen" disabled>Brief einwerfen</button>
+
+    <h2>Deine Briefe</h2>
+    <ul id="verlauf" class="verlauf"></ul>
+
+    <div class="fuss"><a href="#" id="reset">Einstellungen</a></div>
+  </section>
+</main>
+
+<!-- Umschlag für die Animation (wird beim Senden kopiert) -->
+<template id="umschlagVorlage">
+  <svg class="flieger" width="120" height="80" viewBox="0 0 120 80">
+    <rect x="1" y="1" width="118" height="78" rx="5" fill="#fbf7f0" stroke="#d9cbb5" stroke-width="2"/>
+    <path d="M2 78 L60 40 L118 78" fill="none" stroke="#e1d4bf" stroke-width="2"/>
+    <path id="klappe" d="M2 2 L60 46 L118 2 Z" fill="#f1e8d9" stroke="#d9cbb5" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="60" cy="44" r="9" fill="#c0675a"/>
+    <path d="M60 49c-3-2-5-4-5-6 0-1.5 1-2.5 2.4-2.5 1 0 2 .7 2.6 1.6.6-.9 1.6-1.6 2.6-1.6 1.4 0 2.4 1 2.4 2.5 0 2-2 4-5 6z" fill="#fbf7f0"/>
+  </svg>
+</template>
+
+<script src="mqtt.min.js"></script>
+<script>
+// ===============================================================
+//  Einstellungen: werden nur auf diesem Handy gespeichert
+// ===============================================================
+const $ = (id) => document.getElementById(id);
+let cfg = JSON.parse(localStorage.getItem("lovebox-cfg") || "null");
+let verlauf = JSON.parse(localStorage.getItem("lovebox-verlauf") || "[]");
+let gelesen = JSON.parse(localStorage.getItem("lovebox-gelesen") || "null");
+let client = null;
+const wenigBewegung = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Einrichtung per Link möglich: ...#key=XYZ&name=Darius&host=...&user=...&pass=...
+if (location.hash.length > 1) {
+  const p = new URLSearchParams(location.hash.slice(1));
+  if (p.get("key")) {
+    cfg = { name: p.get("name") || "Darius", key: p.get("key"),
+            host: p.get("host") || "wss://broker.hivemq.com:8884/mqtt",
+            user: p.get("user") || "", pass: p.get("pass") || "" };
+    localStorage.setItem("lovebox-cfg", JSON.stringify(cfg));
+  }
+  history.replaceState(null, "", location.pathname);  // Schlüssel aus der Adresszeile entfernen
+}
+
+function zeigeSetup() {
+  $("setup").classList.remove("hidden");
+  $("haupt").classList.add("hidden");
+  if (cfg) for (const k in cfg) if ($("setupForm")[k]) $("setupForm")[k].value = cfg[k];
+}
+
+$("setupForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f = e.target;
+  cfg = { name: f.name.value.trim(), key: f.key.value.trim(), host: f.host.value.trim(),
+          user: f.user.value.trim(), pass: f.pass.value };
+  localStorage.setItem("lovebox-cfg", JSON.stringify(cfg));
+  start();
+});
+
+$("reset").addEventListener("click", (e) => { e.preventDefault(); if (client) client.end(true); zeigeSetup(); });
+
+// ===============================================================
+//  Verbindung zum Briefkasten (MQTT)
+// ===============================================================
+// ---- Verschlüsselung (gleiches Verfahren wie include/geheim.h auf der Box) ----
+// Aus dem geheimen Schlüssel werden mit SHA-256 abgeleitet:
+//   • der AES-256-GCM-Schlüssel   • die geheime Adresse (Topic) im Briefkasten
+let aesKey = null, topicId = "";
+const enc = new TextEncoder(), dec = new TextDecoder();
+const hex = (b) => [...b].map((x) => x.toString(16).padStart(2, "0")).join("");
+const zuBase64 = (b) => btoa(String.fromCharCode(...b));
+const ausBase64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+
+async function leiteSchluesselAb(key) {
+  const a = await crypto.subtle.digest("SHA-256", enc.encode("lovebox-aes:" + key));
+  aesKey = await crypto.subtle.importKey("raw", a, "AES-GCM", false, ["encrypt", "decrypt"]);
+  const t = new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode("lovebox-topic:" + key)));
+  topicId = hex(t.slice(0, 12));
+}
+
+async function verschluesseln(text) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, enc.encode(text)));
+  const alles = new Uint8Array(12 + ct.length);   // [IV][Text+Prüfsumme]
+  alles.set(iv); alles.set(ct, 12);
+  return zuBase64(alles);
+}
+
+async function entschluesseln(b64) {
+  const roh = ausBase64(b64);
+  const klar = await crypto.subtle.decrypt({ name: "AES-GCM", iv: roh.slice(0, 12) }, aesKey, roh.slice(12));
+  return dec.decode(klar);
+}
+
+const topic = (name) => `lovebox/${topicId}/${name}`;
+
+function setStatus(text, klasse) {
+  $("status").querySelector("span").textContent = text;
+  $("status").className = "status " + (klasse || "");
+}
+
+async function start() {
+  await leiteSchluesselAb(cfg.key);
+  $("setup").classList.add("hidden");
+  $("haupt").classList.remove("hidden");
+  $("unterschrift").textContent = "– " + cfg.name;
+  zeichneVerlauf();
+  setStatus("verbinde …");
+
+  client = mqtt.connect(cfg.host, {
+    username: cfg.user || undefined,
+    password: cfg.pass || undefined,
+    clientId: "lovebox-app-" + Math.random().toString(16).slice(2, 10),
+    reconnectPeriod: 3000,
+  });
+
+  client.on("connect", () => {
+    setStatus("verbunden");
+    client.subscribe([topic("online"), topic("herz"), topic("gelesen"), topic("nachricht")]);
+    pruefeSenden();
+  });
+  client.on("offline", () => { setStatus("kein Internet", "off"); pruefeSenden(); });
+  client.on("error", (err) => setStatus("Fehler: " + err.message, "off"));
+
+  client.on("message", async (t, payload) => {
+    if (!payload.length) return;                       // gelöschte Nachricht
+    if (t === topic("online")) {
+      payload.toString() === "1" ? setStatus("Box ist an", "on") : setStatus("Box ist aus", "off");
+      return;
+    }
+    let text;
+    try { text = await entschluesseln(payload.toString()); }
+    catch { console.warn("Nachricht ließ sich nicht entschlüsseln", t); return; }
+    if (t === topic("herz")) {
+      const h = JSON.parse(text);
+      const alt = Number(localStorage.getItem("lovebox-herzN") || 0);
+      $("herzN").textContent = h.n === 1 ? "1 Herz" : `${h.n} Herzen`;
+      $("herzZeit").textContent = "zuletzt " + wann(h.t);
+      if (h.n > alt) herzenSteigenAuf(Math.min(h.n - alt, 5));  // neue Herzen seit dem letzten Öffnen
+      localStorage.setItem("lovebox-herzN", h.n);
+    } else if (t === topic("gelesen")) {
+      gelesen = JSON.parse(text);
+      localStorage.setItem("lovebox-gelesen", text);
+      zeichneVerlauf();
+    } else if (t === topic("nachricht")) {
+      const m = JSON.parse(text);
+      if (m.id && !verlauf.some((v) => v.id === m.id)) { verlauf.unshift(m); speichereVerlauf(); }
+    }
+  });
+}
+
+// ===============================================================
+//  Brief schreiben & einwerfen
+// ===============================================================
+function pruefeSenden() {
+  const t = $("text").value.trim();
+  $("zaehler").textContent = `${$("text").value.length}/200`;
+  const s = t ? schaetzeSeiten(t) : 0;
+  $("seiten").textContent = s ? (s === 1 ? "1 Seite auf der Box" : `${s} Seiten auf der Box`) : "";
+  $("senden").disabled = !t || !client || !client.connected;
+}
+
+// Grobe Schätzung, wie die Box umbricht: 14 Zeichen pro Zeile, 3 Zeilen pro Seite
+function schaetzeSeiten(t) {
+  let zeilen = 0;
+  for (const absatz of t.split("\n")) {
+    let laenge = 0, z = 1;
+    for (const wort of absatz.split(/\s+/).filter(Boolean)) {
+      const l = [...wort].length;
+      if (laenge === 0) laenge = l;
+      else if (laenge + 1 + l <= 14) laenge += 1 + l;
+      else { z++; laenge = l; }
+    }
+    zeilen += z;
+  }
+  return Math.max(1, Math.ceil(zeilen / 3));
+}
+
+$("text").addEventListener("input", pruefeSenden);
+
+document.querySelectorAll(".zeichen button").forEach((b) =>
+  b.addEventListener("click", () => {
+    const ta = $("text"), s = ta.selectionStart, e = ta.selectionEnd;
+    ta.value = ta.value.slice(0, s) + b.textContent + ta.value.slice(e);
+    ta.selectionStart = ta.selectionEnd = s + b.textContent.length;
+    ta.focus(); pruefeSenden();
+  }));
+
+$("senden").addEventListener("click", async () => {
+  const nachricht = { id: String(Date.now()), von: cfg.name, text: $("text").value.trim() };
+  $("senden").disabled = true;
+  $("text").blur();  // Tastatur zu, damit man die Animation sieht
+  // retain: true -> der Briefkasten hebt den Brief auf, falls die Box gerade aus ist
+  const geheimtext = await verschluesseln(JSON.stringify(nachricht));
+  client.publish(topic("nachricht"), geheimtext, { qos: 1, retain: true }, async (err) => {
+    if (err) { alert("Senden hat nicht geklappt: " + err.message); pruefeSenden(); return; }
+    await briefFliegt();
+    nachricht.t = Math.floor(Date.now() / 1000);
+    verlauf = verlauf.filter((v) => v.id !== nachricht.id);
+    verlauf.unshift(nachricht); speichereVerlauf();
+    $("text").value = ""; pruefeSenden();
+    $("brief").classList.remove("weg");
+  });
+});
+
+// ===============================================================
+//  Animationen
+// ===============================================================
+const warte = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Brief faltet sich zum Umschlag und fliegt in den Briefkasten
+async function briefFliegt() {
+  const kasten = $("kasten");
+  if (wenigBewegung) { kasten.classList.add("voll"); return; }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  await warte(250);
+
+  const brief = $("brief").getBoundingClientRect();
+  const schlitz = $("schlitz").getBoundingClientRect();
+  const umschlag = $("umschlagVorlage").content.firstElementChild.cloneNode(true);
+  document.body.append(umschlag);
+
+  const startX = brief.left + brief.width / 2 - 60, startY = brief.top + brief.height / 2 - 40;
+  const zielX = schlitz.left + schlitz.width / 2 - 60, zielY = schlitz.top - 40;
+
+  // 1) Brief verschwindet, Umschlag erscheint (Klappe offen)
+  $("brief").classList.add("weg");
+  await umschlag.animate([
+    { transform: `translate(${startX}px, ${startY}px) scale(1.6)`, opacity: 0 },
+    { transform: `translate(${startX}px, ${startY}px) scale(1.3)`, opacity: 1 },
+  ], { duration: 300, easing: "ease-out", fill: "forwards" }).finished;
+
+  // 2) Klappe schließt sich
+  umschlag.classList.add("zu");
+  await warte(380);
+
+  // 3) Flug zum Schlitz (im Bogen), dann hineinrutschen
+  await umschlag.animate([
+    { transform: `translate(${startX}px, ${startY}px) scale(1.3) rotate(0deg)` },
+    { transform: `translate(${(startX + zielX) / 2 + 30}px, ${Math.min(startY, zielY) - 30}px) scale(.8) rotate(-8deg)`, offset: .6 },
+    { transform: `translate(${zielX}px, ${zielY}px) scale(.5) rotate(0deg)` },
+  ], { duration: 700, easing: "cubic-bezier(.45,0,.3,1)", fill: "forwards" }).finished;
+
+  await umschlag.animate([
+    { transform: `translate(${zielX}px, ${zielY}px) scale(.5)`, clipPath: "inset(0 0 0 0)" },
+    { transform: `translate(${zielX}px, ${zielY + 40}px) scale(.5)`, clipPath: "inset(0 0 100% 0)" },
+  ], { duration: 300, easing: "ease-in", fill: "forwards" }).finished;
+  umschlag.remove();
+
+  // 4) Briefkasten wackelt, Fähnchen geht hoch
+  kasten.classList.remove("wackeln"); void kasten.offsetWidth;
+  kasten.classList.add("wackeln", "voll");
+  await warte(300);
+}
+
+// Kleine Herzen steigen aus dem Briefkasten auf
+function herzenSteigenAuf(anzahl) {
+  if (wenigBewegung) return;
+  const kasten = $("kasten");
+  for (let i = 0; i < anzahl; i++) {
+    setTimeout(() => {
+      const h = document.createElement("span");
+      h.className = "herzchen";
+      h.textContent = "♥";
+      h.style.left = `calc(50% + ${Math.round(Math.random() * 40 - 20)}px)`;
+      h.style.top = "40px";
+      h.style.setProperty("--dx", `${Math.round(Math.random() * 60 - 30)}px`);
+      kasten.append(h);
+      setTimeout(() => h.remove(), 1700);
+    }, i * 250);
+  }
+}
+
+// ===============================================================
+//  Verlauf der Briefe
+// ===============================================================
+const ICON_ZU = '<svg viewBox="0 0 26 18"><rect x="1" y="1" width="24" height="16" rx="2" fill="none" stroke="#b8a892" stroke-width="1.5"/><path d="M1.5 2 13 10.5 24.5 2" fill="none" stroke="#b8a892" stroke-width="1.5"/></svg>';
+const ICON_OFFEN = '<svg viewBox="0 0 26 22"><path d="M1 9v11h24V9" fill="none" stroke="#7b9a6c" stroke-width="1.5"/><path d="M1 9 13 1l12 8" fill="none" stroke="#7b9a6c" stroke-width="1.5"/><path d="M1 9l12 7.5L25 9" fill="none" stroke="#7b9a6c" stroke-width="1.5"/></svg>';
+
+function speichereVerlauf() {
+  verlauf = verlauf.slice(0, 30);
+  localStorage.setItem("lovebox-verlauf", JSON.stringify(verlauf));
+  zeichneVerlauf();
+}
+
+function zeichneVerlauf() {
+  const ul = $("verlauf");
+  ul.innerHTML = "";
+  const neuester = verlauf[0];
+  const istGelesen = (m) => gelesen && Number(gelesen.id) >= Number(m.id);
+  // Fähnchen oben = der neueste Brief liegt noch ungelesen in ihrer Box
+  $("kasten").classList.toggle("voll", !!neuester && !istGelesen(neuester));
+
+  if (!verlauf.length) { ul.innerHTML = '<li class="leer">Noch keine Briefe.</li>'; return; }
+  for (const m of verlauf) {
+    const li = document.createElement("li");
+    const ok = istGelesen(m);
+    li.innerHTML = ok ? ICON_OFFEN : ICON_ZU;
+    const inhalt = document.createElement("div");
+    const text = document.createElement("div");
+    text.className = "text";
+    text.textContent = m.text;
+    const meta = document.createElement("div");
+    meta.className = "meta" + (ok ? " gelesen" : "");
+    meta.textContent = `${wann(m.t || Number(m.id) / 1000)} · ${ok ? "gelesen" : "liegt im Briefkasten"}`;
+    inhalt.append(text, meta);
+    li.append(inhalt);
+    ul.append(li);
+  }
+}
+
+function wann(sekunden) {
+  if (!sekunden) return "";
+  const d = new Date(sekunden * 1000), heute = new Date();
+  const uhr = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+  if (d.toDateString() === heute.toDateString()) return "heute " + uhr;
+  if (d.toDateString() === new Date(heute - 864e5).toDateString()) return "gestern " + uhr;
+  return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) + " " + uhr;
+}
+
+// Beim Zurückkehren in die App sofort neu verbinden
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && client && !client.connected) client.reconnect();
+});
+
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+
+cfg ? start() : zeigeSetup();
+</script>
+</body>
+</html>
