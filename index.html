@@ -131,6 +131,9 @@
   .wochen div span { position: absolute; top: 2px; left: 0; right: 0; text-align: center; font-size: 9px; color: #8f8173; z-index: 1; }
   .boxen { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 12px; background: var(--linie); }
   .boxen i { display: block; height: 100%; }
+  .heute-liste { list-style: none; padding: 0; margin: 8px 0 4px; }
+  .heute-liste li { padding: 6px 0; border-top: 1px solid var(--linie); font: 16px var(--serif); }
+  .heute-liste li small { display: block; font: 12px -apple-system, sans-serif; color: var(--blass); }
   /* ---------- Einrichtung ---------- */
   .setup h2 { margin-top: 10px; color: var(--tinte); font-size: 20px; }
   .setup p { color: var(--blass); font-size: 14px; margin-top: 0; }
@@ -205,7 +208,8 @@
       <div class="brief mission" id="lMissionBox">
         <div class="anrede">Mission für heute</div>
         <div id="lMission" class="mission-text"></div>
-        <div class="klein-info">Greif sie im Gespräch auf 😉</div>
+        <ul id="lHeute" class="heute-liste"></ul>
+        <div class="klein-info">Greif die Sätze im Gespräch auf 😉</div>
       </div>
 
       <h2>Wackelt noch <span class="tipp">→ benutz diese Sätze mit ihr</span></h2>
@@ -462,8 +466,19 @@ document.querySelectorAll(".zeichen button").forEach((b) =>
     ta.focus(); pruefeSenden();
   }));
 
+// Das Display der Box kennt nur lateinische Buchstaben (inkl. ă â î ș ț ä ö ü ß). Anführungszeichen,
+// Gedankenstriche, Emojis usw. kann es nicht zeigen. Darum wandeln wir sie vor dem Senden um.
+function fuerDisplay(t) {
+  const ersatz = { "“": '"', "”": '"', "„": '"', "‘": "'", "’": "'", "‚": "'", "–": "-", "—": "-", "…": "...",
+    "€": "EUR", "❤": "<3", "♥": "<3", "ş": "ș", "ţ": "ț", "Ş": "Ș", "Ţ": "Ț" };
+  t = [...t].map((c) => ersatz[c] ?? c).join("");
+  return t.replace(/[^\n\u0020-\u017F\u0218-\u021B]/gu, "").replace(/ {2,}/g, " ").trim();
+}
+
 $("senden").addEventListener("click", async () => {
-  const nachricht = { id: String(Date.now()), von: cfg.name, text: $("text").value.trim() };
+  const sauber = fuerDisplay($("text").value);
+  if (!sauber) { alert("Dieser Text enthält nur Zeichen, die die Box nicht anzeigen kann."); return; }
+  const nachricht = { id: String(Date.now()), von: cfg.name, text: sauber };
   $("senden").disabled = true;
   $("text").blur();  // Tastatur zu, damit man die Animation sieht
   // retain: true -> der Briefkasten hebt den Brief auf, falls die Box gerade aus ist
@@ -600,6 +615,14 @@ function zeichneLernen(d) {
   $("lGesamt").textContent = `${gesehen} von ${d.gesamt} Sätzen angefangen · ${sicher} sitzen sicher`;
   $("lMission").textContent = d.mission || "";
   $("lMissionBox").classList.toggle("hidden", !d.mission);
+  const hl = $("lHeute"); hl.innerHTML = "";
+  for (const k of d.heute || []) {
+    const li = document.createElement("li");
+    li.textContent = k.ro.replace("{x}", "...");
+    const kl = document.createElement("small");
+    kl.textContent = `${k.de.replace("{x}", "...")} · [${k.p}]`;
+    li.append(kl); hl.append(li);
+  }
 
   // Wochen-Übersicht
   const wo = $("lWochen"); wo.innerHTML = "";
