@@ -89,6 +89,7 @@
   .leer { color: var(--blass); font-size: 14px; font-style: italic; }
   .fuss { text-align: center; margin-top: 26px; font-size: 13px; }
   .fuss a { color: var(--blass); }
+  .kennung { margin-top: 6px; font-size: 11px; color: #b8a892; font-family: ui-monospace, monospace; }
 
   /* ---------- Einrichtung ---------- */
   .setup h2 { margin-top: 10px; color: var(--tinte); font-size: 20px; }
@@ -170,7 +171,8 @@
     <h2>Deine Briefe</h2>
     <ul id="verlauf" class="verlauf"></ul>
 
-    <div class="fuss"><a href="#" id="reset">Einstellungen</a> · <a href="#" id="abmelden">Abmelden</a></div>
+    <div class="fuss"><a href="#" id="reset">Einstellungen</a> · <a href="#" id="abmelden">Abmelden</a>
+      <div class="kennung">Box-Kennung: <span id="kennung"></span></div></div>
   </section>
 </main>
 
@@ -218,7 +220,12 @@ function zeigeSetup() {
 $("setupForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const f = e.target;
-  cfg = { name: f.name.value.trim(), key: f.key.value.trim(), host: f.host.value.trim() };
+  const key = saeubere(f.key.value);
+  if (key.length !== 32) {
+    alert(`Der Schlüssel muss 32 Zeichen haben (0–9, a–f). Erkannt: ${key.length}.`);
+    return;
+  }
+  cfg = { name: f.name.value.trim(), key, host: f.host.value.trim() };
   localStorage.setItem("lovebox-cfg", JSON.stringify(cfg));
   start();
 });
@@ -247,6 +254,10 @@ const enc = new TextEncoder(), dec = new TextDecoder();
 const hex = (b) => [...b].map((x) => x.toString(16).padStart(2, "0")).join("");
 const zuBase64 = (b) => btoa(String.fromCharCode(...b));
 const ausBase64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+
+// Nur Ziffern und a–f behalten: entfernt unsichtbare Zeichen, Leerzeichen usw.,
+// die beim Kopieren auf dem Handy manchmal mitkommen.
+const saeubere = (key) => (key || "").toLowerCase().replace(/[^0-9a-f]/g, "");
 
 async function leiteSchluesselAb(key) {
   const a = await crypto.subtle.digest("SHA-256", enc.encode("lovebox-aes:" + key));
@@ -277,7 +288,9 @@ function setStatus(text, klasse) {
 }
 
 async function start() {
+  cfg.key = saeubere(cfg.key);
   await leiteSchluesselAb(cfg.key);
+  $("kennung").textContent = topicId.slice(0, 6);
   $("setup").classList.add("hidden");
   $("haupt").classList.remove("hidden");
   $("unterschrift").textContent = "– " + cfg.name;
