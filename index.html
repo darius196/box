@@ -83,7 +83,7 @@
   .verlauf li { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--linie); }
   .verlauf li:first-child { border-top: 0; }
   .verlauf svg { flex: none; width: 26px; margin-top: 3px; }
-  .verlauf .text { font: 15px/1.4 var(--serif); }
+  .verlauf .text { font: 15px/1.4 var(--serif); white-space: pre-line; }
   .verlauf .meta { font-size: 12px; color: var(--blass); margin-top: 2px; }
   .verlauf .meta.gelesen { color: var(--gruen); }
   .leer { color: var(--blass); font-size: 14px; font-style: italic; }
@@ -134,6 +134,50 @@
   .heute-liste { list-style: none; padding: 0; margin: 8px 0 4px; }
   .heute-liste li { padding: 6px 0; border-top: 1px solid var(--linie); font: 16px var(--serif); }
   .heute-liste li small { display: block; font: 12px -apple-system, sans-serif; color: var(--blass); }
+  /* ---------- Brief: Anrede / Gruß ---------- */
+  .feld { width: 100%; border: 0; border-bottom: 1px solid var(--linie); background: transparent; outline: none;
+    color: var(--tinte); font: italic 18px var(--serif); padding: 4px 0 8px; margin-bottom: 8px; }
+  .feld.rechts { text-align: right; margin: 6px 0 0; border-bottom: 0; border-top: 1px solid var(--linie); padding-top: 10px; }
+  .feld::placeholder { color: #c2b5a6; }
+  .vorschau-titel { font-size: 12px; color: var(--blass); margin: 16px 0 6px; display: flex; justify-content: space-between; }
+  .oleds { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .oled { background: #0c1a20; border-radius: 6px; padding: 8px 10px 6px; color: #9fe3f0;
+    font: 12px/1.25 ui-monospace, "SF Mono", Menlo, monospace; min-height: 74px; }
+  .oled .kopf { color: #4f8b97; font-size: 9px; border-bottom: 1px solid #1d3a44; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .oled div.z { white-space: pre; }
+  /* ---------- Lernen: Unterbereiche ---------- */
+  .sub { display: flex; gap: 6px; overflow-x: auto; margin: 14px -2px 2px; padding: 2px; scrollbar-width: none; }
+  .sub::-webkit-scrollbar { display: none; }
+  .sub button { flex: none; border: 1px solid var(--linie); background: transparent; color: var(--blass);
+    padding: 7px 14px; border-radius: 999px; font: 600 13px -apple-system, sans-serif; }
+  .sub button.aktiv { background: var(--tinte); color: var(--papier); border-color: var(--tinte); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 6px; }
+  .chips button { min-width: 36px; padding: 6px 8px; border: 1px solid var(--linie); border-radius: 8px; background: transparent;
+    color: var(--tinte); font: 600 13px -apple-system, sans-serif; position: relative; }
+  .chips button.gesperrt { color: #b8a892; }
+  .chips button.jetzt { border-color: var(--rose); }
+  .chips button.gewaehlt { background: var(--rose); color: #fff; border-color: var(--rose); }
+  .banner { background: var(--papier); border-radius: 12px; padding: 14px 16px; margin: 10px 0; font-size: 14px; box-shadow: 0 1px 2px rgba(61,51,44,.06); }
+  .banner b { font-family: var(--serif); }
+  .knopf { display: inline-block; margin-top: 10px; padding: 10px 16px; border: 0; border-radius: 999px; background: var(--rose);
+    color: #fff; font: 600 14px -apple-system, sans-serif; }
+  .knopf.leise { background: transparent; color: var(--rose); border: 1px solid var(--rose); }
+  .knopf:disabled { opacity: .4; }
+  .stufe { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 8px 0; }
+  .stufe button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--linie); background: var(--papier);
+    font: 600 22px -apple-system, sans-serif; color: var(--tinte); }
+  .stufe output { font: 600 32px var(--serif); min-width: 60px; text-align: center; }
+  .formular label { display: block; font-size: 12px; color: var(--blass); margin: 12px 0 4px; }
+  .formular input { width: 100%; padding: 11px 12px; border: 1px solid var(--linie); border-radius: 10px; background: var(--papier);
+    color: var(--tinte); font: 16px -apple-system, sans-serif; }
+  .badge { font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 2px 6px; border-radius: 99px; background: #e3d6c1; color: #7a6a57; white-space: nowrap; }
+  .badge.neu { background: #f1d3cd; color: var(--rose-dunkel); }
+  .badge.ok { background: #dbe8d3; color: #4f7040; }
+  .badge.nochmal { background: #f4e1c4; color: #8a6420; }
+  .karten .aktion { margin-top: 4px; font-size: 12px; color: var(--rose); background: none; border: 0; padding: 0; }
+  #toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 20px); transform: translate(-50%, 30px); opacity: 0;
+    background: var(--tinte); color: #fff; padding: 10px 16px; border-radius: 999px; font-size: 14px; transition: .3s; z-index: 20; max-width: 90%; text-align: center; }
+  #toast.da { opacity: 1; transform: translate(-50%, 0); }
   /* ---------- Einrichtung ---------- */
   .setup h2 { margin-top: 10px; color: var(--tinte); font-size: 20px; }
   .setup p { color: var(--blass); font-size: 14px; margin-top: 0; }
@@ -188,37 +232,94 @@
 
     <!-- ===== Tab: Lernen ===== -->
     <div id="tabLernen" class="hidden">
-      <div class="lern-kopf">
-        <div class="serie"><b id="lSerie">0</b><span>Tage am Stück</span></div>
-        <div class="woche"><span id="lWoche">Woche 1</span><b id="lThema">–</b></div>
-      </div>
-      <div class="heute">
-        <div><b id="lOk">0</b><span>gewusst</span></div>
-        <div><b id="lFail">0</b><span>nochmal</span></div>
-        <div><b id="lOffen">0</b><span>offen</span></div>
-      </div>
-      <div class="fortschritt"><div id="lBalken"></div></div>
-      <div class="klein-info" id="lGesamt">–</div>
+      <nav class="sub" id="subNav">
+        <button data-sub="uebersicht" class="aktiv">Übersicht</button>
+        <button data-sub="heute">Heute</button>
+        <button data-sub="woerter">Wörter</button>
+        <button data-sub="mehr">Mehr</button>
+      </nav>
 
-      <h2>24 Wochen</h2>
-      <div id="lWochen" class="wochen"></div>
-      <div class="klein-info">Hell = angefangen, dunkel = sitzt sicher. Der Rahmen ist die aktuelle Woche.</div>
-      <div id="lBoxen" class="boxen"></div>
+      <!-- Übersicht -->
+      <div id="sub-uebersicht">
+        <div class="lern-kopf">
+          <div class="serie"><b id="lSerie">0</b><span>Tage am Stück</span></div>
+          <div class="woche"><span id="lWoche">Woche 1</span><b id="lThema">–</b></div>
+        </div>
+        <div class="heute">
+          <div><b id="lOk">0</b><span>gewusst</span></div>
+          <div><b id="lFail">0</b><span>nochmal</span></div>
+          <div><b id="lOffen">0</b><span>offen</span></div>
+        </div>
+        <div class="fortschritt"><div id="lBalken"></div></div>
+        <div class="klein-info" id="lGesamt">–</div>
 
-      <div class="brief mission" id="lMissionBox">
-        <div class="anrede">Mission für heute</div>
-        <div id="lMission" class="mission-text"></div>
-        <ul id="lHeute" class="heute-liste"></ul>
-        <div class="klein-info">Greif die Sätze im Gespräch auf 😉</div>
+        <div class="brief mission" id="lMissionBox">
+          <div class="anrede">Mission für heute Abend</div>
+          <div id="lMission" class="mission-text"></div>
+          <div class="klein-info">Die Sätze von heute stehen unter „Heute“.</div>
+        </div>
+
+        <h2>24 Wochen</h2>
+        <div id="lWochen" class="wochen"></div>
+        <div class="klein-info">Hell = angefangen, dunkel = sitzt sicher. Rahmen = aktuelle Woche. Tipp: Unter „Wörter“ kannst du jede Woche ansehen.</div>
+        <div id="lBoxen" class="boxen"></div>
+
+        <h2>Wackelt noch <span class="tipp">→ benutz diese Sätze mit ihr</span></h2>
+        <ul id="lWackelt" class="karten"></ul>
+        <h2>Zuletzt gelernt</h2>
+        <ul id="lNeu" class="karten"></ul>
+        <h2>Sitzt sicher</h2>
+        <ul id="lKann" class="karten"></ul>
+        <div class="klein-info" id="lStand"></div>
       </div>
 
-      <h2>Wackelt noch <span class="tipp">→ benutz diese Sätze mit ihr</span></h2>
-      <ul id="lWackelt" class="karten"></ul>
-      <h2>Zuletzt gelernt</h2>
-      <ul id="lNeu" class="karten"></ul>
-      <h2>Sitzt sicher</h2>
-      <ul id="lKann" class="karten"></ul>
-      <div class="klein-info" id="lStand"></div>
+      <!-- Heute -->
+      <div id="sub-heute" class="hidden">
+        <h2 style="margin-top:18px">Heute geübt</h2>
+        <div class="klein-info" id="hZusammen"></div>
+        <ul id="hListe" class="karten"></ul>
+      </div>
+
+      <!-- Wörter -->
+      <div id="sub-woerter" class="hidden">
+        <h2 style="margin-top:18px">Alle Wörter ansehen</h2>
+        <div class="klein-info">Wähle eine Woche. Du siehst jeden Satz mit Aussprache und ob sie ihn schon kann.</div>
+        <div id="wChips" class="chips"></div>
+        <div id="wBanner"></div>
+        <div id="wZusammen" class="klein-info"></div>
+        <ul id="wListe" class="karten"></ul>
+      </div>
+
+      <!-- Mehr -->
+      <div id="sub-mehr" class="hidden">
+        <h2 style="margin-top:18px">Tempo</h2>
+        <div class="banner">
+          <b>Neue Wörter pro Tag</b>
+          <div class="stufe"><button id="tempoMinus">−</button><output id="tempoWert">5</output><button id="tempoPlus">+</button></div>
+          <div class="klein-info" id="tempoInfo"></div>
+        </div>
+        <div class="banner">
+          <b>Schnell unterwegs?</b>
+          <div class="klein-info" style="margin-top:4px">Schaltet die nächste Woche sofort frei. Dann kommen ihre Wörter schon heute dran, statt erst nächste Woche.</div>
+          <button id="wocheVor" class="knopf">Nächste Woche freischalten</button>
+        </div>
+
+        <h2>Eigenes Wort hinzufügen</h2>
+        <div class="banner formular">
+          <label>Deutsch</label>
+          <input id="nDe" maxlength="50" placeholder="z.B. Ich habe Hunger auf Pizza.">
+          <label>Rumänisch</label>
+          <input id="nRo" maxlength="50" placeholder="z.B. Mi-e poftă de pizza." autocapitalize="off">
+          <div class="zeichen" style="margin-top:8px" id="nZeichen">
+            <button type="button">ă</button><button type="button">â</button><button type="button">î</button>
+            <button type="button">ș</button><button type="button">ț</button>
+          </div>
+          <label>Aussprache (wird automatisch vorgeschlagen, du kannst sie ändern)</label>
+          <input id="nPron" maxlength="60" autocapitalize="off">
+          <button id="nSenden" class="knopf" disabled>Hinzufügen</button>
+          <div class="klein-info">Eigene Wörter kommen als Nächstes dran und stehen unter „Wörter“ → „Eigene“.</div>
+        </div>
+      </div>
     </div>
 
     <!-- ===== Tab: Briefe ===== -->
@@ -240,17 +341,19 @@
     <div class="herzinfo"><span class="h">♥</span> <b id="herzN">0 Herzen</b> von ihr · <span id="herzZeit">noch keins</span></div>
 
     <div id="brief" class="brief">
-      <div class="anrede">Draga mea,</div>
-      <textarea id="text" maxlength="200" placeholder="schreib ihr etwas Schönes …"></textarea>
-      <div class="unterschrift" id="unterschrift"></div>
+      <input id="anrede" class="feld" maxlength="40" placeholder="Anrede, z.B. Liebes Bbylein," autocomplete="off">
+      <textarea id="text" maxlength="240" placeholder="schreib ihr etwas Schönes …"></textarea>
+      <input id="gruss" class="feld rechts" maxlength="40" placeholder="Gruß, z.B. Dein Darius" autocomplete="off">
       <div class="werkzeuge">
         <div class="zeichen">
           <button type="button">ă</button><button type="button">â</button><button type="button">î</button>
           <button type="button">ș</button><button type="button">ț</button>
         </div>
-        <div class="info"><div id="zaehler">0/200</div><div id="seiten"></div></div>
+        <div class="info"><div id="zaehler">0/240</div><div id="seiten"></div></div>
       </div>
     </div>
+    <div class="vorschau-titel"><span>So erscheint der Brief auf der Box</span><span id="vorschauSeiten"></span></div>
+    <div id="oleds" class="oleds"></div>
     <button id="senden" class="einwerfen" disabled>Brief einwerfen</button>
 
     <h2>Deine Briefe</h2>
@@ -261,6 +364,8 @@
       <div class="kennung">Box-Kennung: <span id="kennung"></span></div></div>
   </section>
 </main>
+
+<div id="toast"></div>
 
 <!-- Umschlag für die Animation (wird beim Senden kopiert) -->
 <template id="umschlagVorlage">
@@ -379,9 +484,13 @@ async function start() {
   $("kennung").textContent = topicId.slice(0, 6);
   $("setup").classList.add("hidden");
   $("haupt").classList.remove("hidden");
-  $("unterschrift").textContent = "– " + cfg.name;
+  // Anrede und Gruß merken (Gruß-Vorschlag: "Dein <Name>")
+  $("anrede").value = localStorage.getItem("lovebox-anrede") ?? "";
+  $("gruss").value = localStorage.getItem("lovebox-gruss") ?? (cfg.name ? "Dein " + cfg.name : "");
+  zeichneVorschau();
   zeichneVerlauf();
   zeigeTab(localStorage.getItem("lovebox-tab") || "briefe");
+  zeigeSub(localStorage.getItem("lovebox-sub") || "uebersicht");
   const lern = localStorage.getItem("lovebox-lernen");
   if (lern) zeichneLernen(JSON.parse(lern));
   setStatus("verbinde …");
@@ -393,8 +502,8 @@ async function start() {
 
   client.on("connect", () => {
     setStatus("verbunden");
-    client.subscribe([topic("online"), topic("herz"), topic("gelesen"), topic("nachricht"), topic("lernen")]);
-    pruefeSenden();
+    client.subscribe([topic("online"), topic("herz"), topic("gelesen"), topic("nachricht"), topic("lernen"), topic("antwort")]);
+    pruefeSenden(); pruefeNeuesWort();
   });
   client.on("offline", () => { setStatus("kein Internet", "off"); pruefeSenden(); });
   client.on("error", (err) => setStatus("Fehler: " + err.message, "off"));
@@ -408,7 +517,11 @@ async function start() {
     let text;
     try { text = await entschluesseln(payload.toString()); }
     catch { console.warn("Nachricht ließ sich nicht entschlüsseln", t); return; }
-    if (t === topic("lernen")) {
+    if (t === topic("antwort")) {
+      const a = JSON.parse(text);
+      const w = befehlWartend.get(a.n);
+      if (w) { clearTimeout(w.t); befehlWartend.delete(a.n); w.resolve(a); }
+    } else if (t === topic("lernen")) {
       localStorage.setItem("lovebox-lernen", text);
       zeichneLernen(JSON.parse(text));
     } else if (t === topic("herz")) {
@@ -432,37 +545,64 @@ async function start() {
 // ===============================================================
 //  Brief schreiben & einwerfen
 // ===============================================================
-function pruefeSenden() {
-  const t = $("text").value.trim();
-  $("zaehler").textContent = `${$("text").value.length}/200`;
-  const s = t ? schaetzeSeiten(t) : 0;
-  $("seiten").textContent = s ? (s === 1 ? "1 Seite auf der Box" : `${s} Seiten auf der Box`) : "";
-  $("senden").disabled = !t || !client || !client.connected;
+// Der Brief besteht aus Anrede, Text und Gruß. Genau so, Zeile für Zeile, steht er auf der Box.
+function briefText() {
+  return [$("anrede").value, $("text").value, $("gruss").value].map(fuerDisplay).filter(Boolean).join("\n");
 }
 
-// Grobe Schätzung, wie die Box umbricht: 14 Zeichen pro Zeile, 3 Zeilen pro Seite
-function schaetzeSeiten(t) {
-  let zeilen = 0;
-  for (const absatz of t.split("\n")) {
-    let laenge = 0, z = 1;
+// Bricht den Text so um wie die Box (9x15-Schrift: 13 Zeichen pro Zeile, 3 Zeilen pro Seite)
+const BOX_SPALTEN = 13, BOX_ZEILEN = 3;
+function boxSeiten(text) {
+  const zeilen = [];
+  for (const absatz of text.split("\n")) {
+    let zeile = "";
     for (const wort of absatz.split(/\s+/).filter(Boolean)) {
-      const l = [...wort].length;
-      if (laenge === 0) laenge = l;
-      else if (laenge + 1 + l <= 14) laenge += 1 + l;
-      else { z++; laenge = l; }
+      const probe = zeile ? zeile + " " + wort : wort;
+      if ([...probe].length <= BOX_SPALTEN) zeile = probe;
+      else { if (zeile) zeilen.push(zeile); zeile = wort; }
     }
-    zeilen += z;
+    if (zeile) zeilen.push(zeile);
   }
-  return Math.max(1, Math.ceil(zeilen / 3));
+  if (!zeilen.length) zeilen.push("");
+  const seiten = [];
+  for (let i = 0; i < zeilen.length; i += BOX_ZEILEN) seiten.push(zeilen.slice(i, i + BOX_ZEILEN));
+  return seiten;
 }
 
-$("text").addEventListener("input", pruefeSenden);
+function zeichneVorschau() {
+  const text = briefText();
+  const seiten = boxSeiten(text);
+  $("oleds").innerHTML = "";
+  if (text) seiten.forEach((z, i) => {
+    const d = document.createElement("div");
+    d.className = "oled";
+    const kopf = document.createElement("div");
+    kopf.className = "kopf";
+    kopf.innerHTML = `<span></span><span>${seiten.length > 1 ? `${i + 1}/${seiten.length}` : ""}</span>`;
+    kopf.firstChild.textContent = "von " + (cfg ? cfg.name : "");
+    d.append(kopf);
+    z.forEach((l) => { const e = document.createElement("div"); e.className = "z"; e.textContent = [...l].slice(0, BOX_SPALTEN).join(""); d.append(e); });
+    $("oleds").append(d);
+  });
+  const n = text.length;
+  $("zaehler").textContent = `${n}/240`;
+  $("zaehler").style.color = n > 240 ? "var(--rose)" : "";
+  $("seiten").textContent = text ? (seiten.length === 1 ? "1 Seite auf der Box" : `${seiten.length} Seiten auf der Box`) : "";
+  $("vorschauSeiten").textContent = "";
+  $("senden").disabled = !text || n > 240 || !client || !client.connected;
+}
+function pruefeSenden() { zeichneVorschau(); }
 
-document.querySelectorAll(".zeichen button").forEach((b) =>
+["text", "anrede", "gruss"].forEach((id) => $(id).addEventListener("input", pruefeSenden));
+$("anrede").addEventListener("change", () => localStorage.setItem("lovebox-anrede", $("anrede").value));
+$("gruss").addEventListener("change", () => localStorage.setItem("lovebox-gruss", $("gruss").value));
+
+document.querySelectorAll("#brief .zeichen button").forEach((b) =>
   b.addEventListener("click", () => {
-    const ta = $("text"), s = ta.selectionStart, e = ta.selectionEnd;
-    ta.value = ta.value.slice(0, s) + b.textContent + ta.value.slice(e);
-    ta.selectionStart = ta.selectionEnd = s + b.textContent.length;
+    const ta = document.activeElement && ["text", "anrede", "gruss"].includes(document.activeElement.id) ? document.activeElement : $("text");
+    const s0 = ta.selectionStart, e0 = ta.selectionEnd;
+    ta.value = ta.value.slice(0, s0) + b.textContent + ta.value.slice(e0);
+    ta.selectionStart = ta.selectionEnd = s0 + b.textContent.length;
     ta.focus(); pruefeSenden();
   }));
 
@@ -476,7 +616,9 @@ function fuerDisplay(t) {
 }
 
 $("senden").addEventListener("click", async () => {
-  const sauber = fuerDisplay($("text").value);
+  localStorage.setItem("lovebox-anrede", $("anrede").value);
+  localStorage.setItem("lovebox-gruss", $("gruss").value);
+  const sauber = briefText();
   if (!sauber) { alert("Dieser Text enthält nur Zeichen, die die Box nicht anzeigen kann."); return; }
   const nachricht = { id: String(Date.now()), von: cfg.name, text: sauber };
   $("senden").disabled = true;
@@ -489,7 +631,7 @@ $("senden").addEventListener("click", async () => {
     nachricht.t = Math.floor(Date.now() / 1000);
     verlauf = verlauf.filter((v) => v.id !== nachricht.id);
     verlauf.unshift(nachricht); speichereVerlauf();
-    $("text").value = ""; pruefeSenden();
+    $("text").value = ""; pruefeSenden();   // Anrede und Gruß bleiben stehen
     $("brief").classList.remove("weg");
   });
 });
@@ -603,6 +745,7 @@ function kartenListe(ul, karten, mitAussprache) {
   }
 }
 
+let lernD = null;           // zuletzt empfangene Zusammenfassung der Box
 function zeichneLernen(d) {
   if (d.v !== 2) return;                       // alte Datenform ignorieren
   $("lSerie").textContent = d.serie || 0;
@@ -615,14 +758,6 @@ function zeichneLernen(d) {
   $("lGesamt").textContent = `${gesehen} von ${d.gesamt} Sätzen angefangen · ${sicher} sitzen sicher`;
   $("lMission").textContent = d.mission || "";
   $("lMissionBox").classList.toggle("hidden", !d.mission);
-  const hl = $("lHeute"); hl.innerHTML = "";
-  for (const k of d.heute || []) {
-    const li = document.createElement("li");
-    li.textContent = k.ro.replace("{x}", "...");
-    const kl = document.createElement("small");
-    kl.textContent = `${k.de.replace("{x}", "...")} · [${k.p}]`;
-    li.append(kl); hl.append(li);
-  }
 
   // Wochen-Übersicht
   const wo = $("lWochen"); wo.innerHTML = "";
@@ -640,7 +775,263 @@ function zeichneLernen(d) {
   kartenListe($("lNeu"), d.neu, false);
   kartenListe($("lKann"), d.sicher, false);
   $("lStand").textContent = "Stand: " + wann(d.t);
+  lernD = d;
+  zeichneHeute(d);
+  zeichneWochenChips(d);
+  zeichneMehr(d);
 }
+
+
+// ===============================================================
+//  Lernen: Unterbereiche
+// ===============================================================
+function zeigeSub(name) {
+  for (const n of ["uebersicht", "heute", "woerter", "mehr"]) $("sub-" + n).classList.toggle("hidden", n !== name);
+  document.querySelectorAll("#subNav button").forEach((b) => b.classList.toggle("aktiv", b.dataset.sub === name));
+  localStorage.setItem("lovebox-sub", name);
+  if (name === "woerter" && lernD && !wGewaehlt) waehleWoche(lernD.woche);
+}
+document.querySelectorAll("#subNav button").forEach((b) => b.addEventListener("click", () => zeigeSub(b.dataset.sub)));
+
+let toastTimer = null;
+function toast(text) {
+  const t = $("toast");
+  t.textContent = text; t.classList.add("da");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("da"), 3200);
+}
+
+// ===============================================================
+//  Befehle an die Box (verschlüsselt, mit steigender Nummer)
+// ===============================================================
+const befehlWartend = new Map();
+let letzteBefehlsNr = 0;
+async function befehl(obj, wartenMs = 10000) {
+  if (!client || !client.connected) throw new Error("Keine Verbindung zum Briefkasten");
+  const n = Math.max(Date.now(), letzteBefehlsNr + 1); letzteBefehlsNr = n;
+  const geheim = await verschluesseln(JSON.stringify({ ...obj, n }));
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => { befehlWartend.delete(n); reject(new Error("Die Box antwortet nicht. Ist sie an und hat sie WLAN?")); }, wartenMs);
+    befehlWartend.set(n, { resolve, t });
+    client.publish(topic("befehl"), geheim, { qos: 1 });
+  });
+}
+
+// ===============================================================
+//  Aussprache-Hilfe (gleiche Regeln wie tools/aussprache.py auf dem Rechner)
+//  ohne Betonung: ă=ö, â/î=ü, ș=sch, ț=ts, c vor e/i=tsch, ß=stimmloses s
+// ===============================================================
+const AUSN = { e: "je", este: "jeßte", ești: "jeschti", eu: "jeu", ea: "ja", ei: "jej", el: "el", ele: "ele", și: "schi", iar: "jar", ce: "tsche", ai: "ai", are: "are", unde: "unde" };
+const VOK = "aăâeiîou";
+function ausspracheWort(w) {
+  const wl = w.toLowerCase();
+  if (AUSN[wl]) return AUSN[wl];
+  const out = []; const n = wl.length;
+  for (let i = 0; i < n;) {
+    const c = wl[i], nxt = wl[i + 1] || "", nxt2 = wl[i + 2] || "";
+    if ((c === "c" || c === "g") && nxt && "ei".includes(nxt)) {
+      const weich = c === "c" ? "tsch" : "dsch";
+      if (nxt2 && VOK.includes(nxt2) && !"ei".includes(nxt2)) { out.push(weich); i += 2; continue; }
+      out.push(weich); i += 1; continue;
+    }
+    if (c === "c" && nxt === "h" && nxt2 && "ei".includes(nxt2)) { out.push("k"); i += 2; continue; }
+    if (c === "g" && nxt === "h" && nxt2 && "ei".includes(nxt2)) { out.push("g"); i += 2; continue; }
+    if (c === "s" && nxt === "c" && nxt2 && "ei".includes(nxt2)) { out.push("schtsch"); i += 3; continue; }
+    if (c === "c") out.push("k");
+    else if (c === "g") out.push("g");
+    else if (c === "ș" || c === "ş") out.push("sch");
+    else if (c === "ț" || c === "ţ") out.push("ts");
+    else if (c === "ă") out.push("ö");
+    else if (c === "â" || c === "î") out.push("ü");
+    else if (c === "s") out.push(i === 0 || VOK.includes(wl[i - 1]) ? "ß" : "s");
+    else if (c === "z") out.push("s");
+    else if (c === "j") out.push("zh");
+    else if (c === "v") out.push("w");
+    else if (c === "x") out.push("ks");
+    else if (c === "e" && i === 0 && nxt && !"ăâî".includes(nxt)) out.push("je");
+    else out.push(c);
+    i++;
+  }
+  let r = out.join("");
+  r = r.replace(/(?<![aeiouöü])ia/g, "ja").replace(/(?<![aeiouöü])ie/g, "je").replace(/(?<![aeiouöü])io/g, "jo").replace(/(?<![aeiouöü])iu/g, "ju");
+  r = r.replace(/ea/g, "ja").replace(/oi/g, "oj").replace(/ii/g, "i").replace(/üi/g, "üj");
+  return r;
+}
+function aussprache(text) {
+  return (text.match(/[A-Za-zăâîșțĂÂÎȘȚşţ-]+|[^\sA-Za-zăâîșțĂÂÎȘȚşţ]+|\s+/g) || [])
+    .map((t) => /^[A-Za-zăâîșțĂÂÎȘȚşţ-]/.test(t) ? t.split("-").map(ausspracheWort).join("-") : /^\s+$/.test(t) ? " " : "")
+    .join("").replace(/\s+/g, " ").trim();
+}
+
+// ===============================================================
+//  Lernen: Heute
+// ===============================================================
+const punkteHtml = (b) => (b ? punkte(b) : "–");
+
+function zeichneHeute(d) {
+  const liste = d.heute || [];
+  const neu = liste.filter((k) => k.n).length;
+  $("hZusammen").textContent = liste.length
+    ? `${liste.length} Sätze geübt, davon ${neu} neu. Greif sie heute Abend im Gespräch auf.`
+    : "Heute wurde noch nichts geübt.";
+  const ul = $("hListe"); ul.innerHTML = "";
+  if (!liste.length) { ul.innerHTML = '<li class="leer">Sobald sie auf der Box lernt, erscheinen die Sätze hier.</li>'; return; }
+  for (const k of liste) {
+    const li = document.createElement("li");
+    li.innerHTML = '<div class="zeile"><span class="ro"></span><span class="badges"></span></div><div class="de"></div><div class="p"></div>';
+    li.querySelector(".ro").textContent = k.ro;
+    li.querySelector(".de").textContent = k.de;
+    li.querySelector(".p").textContent = "[" + k.p + "]";
+    const b = li.querySelector(".badges");
+    if (k.n) b.insertAdjacentHTML("beforeend", '<span class="badge neu">NEU</span> ');
+    b.insertAdjacentHTML("beforeend", k.r === 1 ? '<span class="badge ok">gewusst</span>' : k.r === 0 ? '<span class="badge nochmal">nochmal</span>' : "");
+    ul.append(li);
+  }
+}
+
+// ===============================================================
+//  Lernen: Wörter (alle 24 Wochen und eigene Wörter)
+// ===============================================================
+let wGewaehlt = null;
+const wCache = {};
+
+function zeichneWochenChips(d) {
+  const box = $("wChips"); box.innerHTML = "";
+  const mk = (w, text) => {
+    const b = document.createElement("button");
+    b.textContent = text;
+    if (w === d.woche) b.classList.add("jetzt");
+    if (w > d.woche) b.classList.add("gesperrt");
+    if (w === wGewaehlt) b.classList.add("gewaehlt");
+    b.addEventListener("click", () => waehleWoche(w));
+    box.append(b);
+  };
+  for (let w = 1; w <= 24; w++) mk(w, String(w));
+  mk(0, "Eigene" + (d.eigene ? ` (${d.eigene})` : ""));
+}
+
+async function waehleWoche(w, neuLaden = false) {
+  wGewaehlt = w;
+  if (lernD) zeichneWochenChips(lernD);
+  const banner = $("wBanner"), liste = $("wListe");
+  banner.innerHTML = ""; $("wZusammen").textContent = "";
+  if (neuLaden) delete wCache[w];
+  if (!wCache[w]) {
+    liste.innerHTML = '<li class="leer">lade …</li>';
+    try { wCache[w] = await befehl({ cmd: "deck", w }); }
+    catch (e) { liste.innerHTML = ""; banner.innerHTML = ""; const d = document.createElement("div"); d.className = "banner"; d.textContent = e.message; banner.append(d); return; }
+  }
+  if (wGewaehlt !== w) return;                      // inzwischen eine andere Woche gewählt
+  zeichneWoche(wCache[w]);
+}
+
+function zeichneWoche(a) {
+  const w = a.w, liste = $("wListe"), banner = $("wBanner");
+  const karten = a.karten || [];
+  const gesehen = karten.filter((k) => k.b > 0).length;
+  const sicher = karten.filter((k) => k.b >= 4).length;
+  $("wZusammen").textContent = w === 0
+    ? `${karten.length} eigene Wörter`
+    : `${karten.length} Sätze · ${gesehen} schon gesehen · ${sicher} sitzen sicher`;
+  banner.innerHTML = "";
+  if (w > a.aktuell) {
+    const tage = (w - a.aktuell) * 7;
+    const d = document.createElement("div");
+    d.className = "banner";
+    d.innerHTML = `<b>Noch gesperrt.</b> Die Box schaltet diese Woche in etwa ${tage} Tagen frei. Lernt sie schnell, kannst du sie jetzt freigeben.<br>`;
+    const k = document.createElement("button");
+    k.className = "knopf"; k.textContent = `Bis Woche ${w} freischalten`;
+    k.addEventListener("click", async () => {
+      k.disabled = true;
+      try { await befehl({ cmd: "woche", d: w - a.aktuell }); Object.keys(wCache).forEach((x) => delete wCache[x]); toast(`Freigeschaltet bis Woche ${w}`); waehleWoche(w, true); }
+      catch (e) { toast(e.message); k.disabled = false; }
+    });
+    d.append(k); banner.append(d);
+  }
+  liste.innerHTML = "";
+  if (!karten.length) { liste.innerHTML = '<li class="leer">' + (w === 0 ? "Noch keine eigenen Wörter. Du kannst sie unter „Mehr“ hinzufügen." : "Keine Karten.") + "</li>"; return; }
+  for (const k of karten) {
+    const li = document.createElement("li");
+    li.innerHTML = '<div class="zeile"><span class="ro"></span><span class="punkte"></span></div><div class="de"></div><div class="p"></div>';
+    li.querySelector(".ro").textContent = k.ro;
+    li.querySelector(".punkte").textContent = k.b ? punkte(k.b) : "";
+    if (!k.b) li.querySelector(".zeile").insertAdjacentHTML("beforeend", '<span class="badge">noch nicht gesehen</span>');
+    li.querySelector(".de").textContent = k.b ? `${k.de} · ${k.o}× gewusst, ${k.f}× nochmal · ${wannTag(k.l)}` : k.de;
+    li.querySelector(".p").textContent = "[" + k.p + "]";
+    if (w === 0) {
+      const l = document.createElement("button");
+      l.className = "aktion"; l.textContent = "Löschen";
+      l.addEventListener("click", async () => {
+        if (!confirm("Dieses Wort löschen?")) return;
+        try { await befehl({ cmd: "weg", i: k.i }); delete wCache[0]; toast("Gelöscht"); waehleWoche(0, true); } catch (e) { toast(e.message); }
+      });
+      li.append(l);
+    }
+    liste.append(li);
+  }
+}
+
+// ===============================================================
+//  Lernen: Mehr (Tempo, Woche freischalten, eigene Wörter)
+// ===============================================================
+let tempo = 5, tempoTimer = null;
+function zeichneMehr(d) {
+  if (!tempoTimer) tempo = d.neuTag || 5;
+  $("tempoWert").textContent = tempo;
+  const gesehen = d.boxen.reduce((a, b) => a + b, 0);
+  const rest = Math.max(0, d.gesamt - gesehen);
+  const tage = Math.ceil(rest / tempo);
+  $("tempoInfo").textContent = rest
+    ? `Noch ${rest} neue Sätze. Bei ${tempo} pro Tag ist sie in etwa ${tage} Tagen (${Math.ceil(tage / 7)} Wochen) mit allem durch. Mehr als 8 pro Tag bedeutet mehr Wiederholungen, bis ca. 20 Karten am Tag sind es 10 bis 15 Minuten.`
+    : "Alle Sätze sind angefangen.";
+  $("wocheVor").disabled = d.woche >= 24;
+  $("wocheVor").textContent = d.woche >= 24 ? "Alle Wochen sind frei" : `Woche ${d.woche + 1} jetzt freischalten`;
+}
+function tempoAendern(delta) {
+  tempo = Math.max(1, Math.min(20, tempo + delta));
+  $("tempoWert").textContent = tempo;
+  if (lernD) zeichneMehr(lernD);
+  clearTimeout(tempoTimer);
+  tempoTimer = setTimeout(async () => {
+    try { await befehl({ cmd: "tempo", k: tempo }); toast(`${tempo} neue Wörter pro Tag`); }
+    catch (e) { toast(e.message); }
+    tempoTimer = null;
+  }, 700);
+}
+$("tempoMinus").addEventListener("click", () => tempoAendern(-1));
+$("tempoPlus").addEventListener("click", () => tempoAendern(1));
+$("wocheVor").addEventListener("click", async () => {
+  $("wocheVor").disabled = true;
+  try { const a = await befehl({ cmd: "woche", d: 1 }); Object.keys(wCache).forEach((x) => delete wCache[x]); toast(`Woche ${a.woche} ist freigeschaltet`); }
+  catch (e) { toast(e.message); $("wocheVor").disabled = false; }
+});
+
+// Eigenes Wort
+let pronVonHand = false;
+function pruefeNeuesWort() {
+  $("nSenden").disabled = !($("nDe").value.trim() && $("nRo").value.trim()) || !client || !client.connected;
+}
+$("nRo").addEventListener("input", () => { if (!pronVonHand) $("nPron").value = aussprache($("nRo").value); pruefeNeuesWort(); });
+$("nPron").addEventListener("input", () => { pronVonHand = $("nPron").value !== aussprache($("nRo").value); });
+$("nDe").addEventListener("input", pruefeNeuesWort);
+document.querySelectorAll("#nZeichen button").forEach((b) => b.addEventListener("click", () => {
+  const f = $("nRo"), s0 = f.selectionStart ?? f.value.length, e0 = f.selectionEnd ?? s0;
+  f.value = f.value.slice(0, s0) + b.textContent + f.value.slice(e0);
+  f.selectionStart = f.selectionEnd = s0 + b.textContent.length; f.focus();
+  f.dispatchEvent(new Event("input"));
+}));
+$("nSenden").addEventListener("click", async () => {
+  const ro = fuerDisplay($("nRo").value), de = fuerDisplay($("nDe").value), p = fuerDisplay($("nPron").value);
+  if (!ro || !de) { toast("Bitte Deutsch und Rumänisch ausfüllen"); return; }
+  if (ro.length > 56 || de.length > 56) { toast("Maximal 56 Zeichen pro Satz"); return; }
+  $("nSenden").disabled = true;
+  try {
+    const a = await befehl({ cmd: "neu", ro, de, p });
+    if (!a.ok) throw new Error("Die Box hat das Wort nicht angenommen (zu viele eigene Wörter?)");
+    $("nRo").value = ""; $("nDe").value = ""; $("nPron").value = ""; pronVonHand = false;
+    delete wCache[0]; toast("Hinzugefügt. Es kommt als Nächstes dran.");
+  } catch (e) { toast(e.message); }
+  pruefeNeuesWort();
+});
 
 // ===============================================================
 //  Verlauf der Briefe
